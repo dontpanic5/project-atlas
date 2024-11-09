@@ -7,7 +7,7 @@ extern GameScreen currentScreen;
 extern Music music;
 
 #ifdef __cplusplus
-extern "C" {            // Prevents name mangling of functions
+//extern "C" {            // Prevents name mangling of functions
 #endif
 
 //----------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ void UnloadGameOverScreen(void);
 int FinishGameOverScreen(void);
 	
 #ifdef __cplusplus
-}
+//}
 #endif
 
 #endif // !SCREENS_H

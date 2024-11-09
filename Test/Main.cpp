@@ -1,16 +1,16 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "rlights.h"
 #include "BattyEngine.h"
-//#include "AnimationMgr.h"
-//#include "EntityMgr.h"
-//#include "LevelMgr.h"
-#include "GameCamera.h"
 #include "screens.h"
 
-static GameCamera cam(true, 80.0f);
+GameScreen currentScreen;
 
-static Light lights[MAX_LIGHTS] = { 0 };
+// Required variables to manage screen transitions (fade-in, fade-out)
+static float transAlpha = 0.0f;
+static bool onTransition = false;
+static bool transFadeOut = false;
+static int transFromScreen = -1;
+static int transToScreen = -1;
 
 static void UpdateLogic(void); // game logic tick
 static void UpdateDrawFrame(); // draw one frame
@@ -29,7 +29,7 @@ int main(void)
 	Init("TEST");
 
 	// TODO music
-	music = LoadMusicStream("");
+	// music = LoadMusicStream("");
 
 	currentScreen = TITLE;
 	InitTitleScreen();
@@ -47,4 +47,109 @@ int main(void)
 	// EntityMgr::Instance().AddEntity( );
 
 	MakeLevel();
+
+	RunMainLoop();
+}
+
+// Request transition to next screen
+static void TransitionToScreen(int screen)
+{
+	onTransition = true;
+	transFadeOut = false;
+	transFromScreen = currentScreen;
+	transToScreen = screen;
+	transAlpha = 0.0f;
+}
+
+// Update transition effect (fade-in, fade-out)
+static void UpdateTransition(void)
+{
+	if (!transFadeOut)
+	{
+		transAlpha += 0.05f;
+
+		// NOTE: Due to float internal representation, condition jumps on 1.0f instead of 1.05f
+		// For that reason we compare against 1.01f, to avoid last frame loading stop
+		if (transAlpha > 1.01f)
+		{
+			transAlpha = 1.0f;
+
+			// Unload current screen
+			switch (transFromScreen)
+			{
+			case TITLE: UnloadTitleScreen(); break;
+			case GAMEOVER: UnloadGameOverScreen(); break;
+			default: break;
+			}
+
+			// Load next screen
+			switch (transToScreen)
+			{
+			case TITLE: InitTitleScreen(); break;
+			case GAMEOVER: InitGameOverScreen(); break;
+			default: break;
+			}
+
+			currentScreen = GameScreen(transToScreen);
+
+			// Activate fade out effect to next loaded screen
+			transFadeOut = true;
+		}
+	}
+	else  // Transition fade out logic
+	{
+		transAlpha -= 0.02f;
+
+		if (transAlpha < -0.01f)
+		{
+			transAlpha = 0.0f;
+			transFadeOut = false;
+			onTransition = false;
+			transFromScreen = -1;
+			transToScreen = -1;
+		}
+	}
+}
+
+// Draw transition effect (full-screen rectangle)
+static void DrawTransition(void)
+{
+	DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, transAlpha));
+}
+
+static void UpdateLogic()
+{
+	//UpdateMusicStream(music);
+
+	if (!onTransition)
+	{
+		switch (currentScreen)
+		{
+		case TITLE:
+		{
+			UpdateTitleScreen();
+
+			if (FinishTitleScreen() == 2) TransitionToScreen(GAMEPLAY);
+
+			break;
+		}
+		}
+	}
+	else UpdateTransition();    // Update transition (fade-in, fade-out)
+}
+
+// draw game frame
+static void UpdateDrawFrame()
+{
+	ClearBackground(RAYWHITE);
+
+	switch (currentScreen)
+	{
+	case TITLE: DrawTitleScreen(); break;
+	case GAMEPLAY: DrawGameplayScreen(); break;
+	case GAMEOVER: DrawGameOverScreen(); break;
+	}
+
+	// Draw full screen rectangle in front of everything
+	if (onTransition) DrawTransition();
 }
