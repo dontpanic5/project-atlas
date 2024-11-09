@@ -4,6 +4,7 @@
 typedef enum GameScreen { TITLE = 0, GAMEPLAY, GAMEOVER } GameScreen;
 
 extern GameScreen currentScreen;
+extern Music music;
 
 #ifdef __cplusplus
 extern "C" {            // Prevents name mangling of functions

@@ -28,6 +28,12 @@ int main(void)
 
 	Init("TEST");
 
+	// TODO music
+	music = LoadMusicStream("");
+
+	currentScreen = TITLE;
+	InitTitleScreen();
+
 	// create one light point above
 	lights[0] = CreateLight(LIGHT_POINT, { 1000.0f, 1000.0f, 1000.0f }, Vector3Zero(), { 20, 20, 20, 255 }, g_lighting);
 

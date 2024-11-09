@@ -18,9 +18,18 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="screen_title.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameControls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="screens.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameControls.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

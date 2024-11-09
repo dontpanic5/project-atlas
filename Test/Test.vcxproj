@@ -102,8 +102,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>Default</ConformanceMode>
       <AdditionalIncludeDirectories>$(BATTY_ENGINE_DIR)\src; $(RAYLIB_DIR)\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -118,7 +118,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>Default</ConformanceMode>
       <AdditionalIncludeDirectories>$(BATTY_ENGINE_DIR)\src; $(RAYLIB_DIR)\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -129,9 +129,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameControls.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="screen_title.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameControls.h" />
     <ClInclude Include="screens.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

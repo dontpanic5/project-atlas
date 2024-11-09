@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/TestBattyEngineGame
+/build/raylib
+/Test/x64/Debug
+/Test/Test.vcxproj.user
