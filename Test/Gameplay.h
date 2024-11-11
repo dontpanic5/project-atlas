@@ -1,0 +1,9 @@
+#ifndef GAMEPLAY_H_INCLUDED
+#define GAMEPLAY_H_INCLUDED
+
+enum ENTITY_TYPES
+{
+	ET_PLAYER,
+};
+
+#endif // !GAMEPLAY_H_INCLUDED

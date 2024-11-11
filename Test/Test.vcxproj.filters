@@ -27,12 +27,24 @@
     <ClCompile Include="screen_gameplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="screen_gameover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="screens.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameControls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

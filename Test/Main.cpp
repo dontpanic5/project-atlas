@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "raylib.h"
 #include "raymath.h"
 #include "BattyEngine.h"
@@ -15,12 +16,6 @@ static int transToScreen = -1;
 static void UpdateLogic(void); // game logic tick
 static void UpdateDrawFrame(); // draw one frame
 
-void MakeLevel()
-{
-	// add environmental objects here
-	//LevelMgr::Instance().AddEnvObj( );
-}
-
 int main(void)
 {
 	SetLogicCb(UpdateLogic);
@@ -33,22 +28,24 @@ int main(void)
 
 	currentScreen = TITLE;
 	InitTitleScreen();
-
-	// create one light point above
-	lights[0] = CreateLight(LIGHT_POINT, { 1000.0f, 1000.0f, 1000.0f }, Vector3Zero(), { 20, 20, 20, 255 }, g_lighting);
-
-	// Add animations here
-	//constexpr int NUM_MODELS = ;
-	//const char* animModels[NUM_MODELS] = { };
-
-	//AnimationMgr::Instance().LoadMultipleModelAnimations(animModels, NUM_MODELS);
-
-	// Add entities here
-	// EntityMgr::Instance().AddEntity( );
-
-	MakeLevel();
+	InitGameplayScreen();
 
 	RunMainLoop();
+
+	// De-Initialization
+	//--------------------------------------------------------------------------------------
+	// Unload current screen data before closing
+	switch (currentScreen)
+	{
+	case TITLE: UnloadTitleScreen(); break;
+	case GAMEOVER: UnloadGameOverScreen(); break;
+	default: break;
+	}
+	UnloadGameplayScreen();
+
+	//UnloadMusicStream(music);
+
+	DeInit();
 }
 
 // Request transition to next screen
@@ -100,7 +97,8 @@ static void UpdateTransition(void)
 	{
 		transAlpha -= 0.02f;
 
-		if (transAlpha < -0.01f)
+		// TODO put this back
+		if (true)
 		{
 			transAlpha = 0.0f;
 			transFadeOut = false;
@@ -114,6 +112,7 @@ static void UpdateTransition(void)
 // Draw transition effect (full-screen rectangle)
 static void DrawTransition(void)
 {
+	printf("drawtransition\n");
 	DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, transAlpha));
 }
 
@@ -133,6 +132,9 @@ static void UpdateLogic()
 
 			break;
 		}
+		case GAMEPLAY:
+			UpdateGameplayScreen();
+			break;
 		}
 	}
 	else UpdateTransition();    // Update transition (fade-in, fade-out)
