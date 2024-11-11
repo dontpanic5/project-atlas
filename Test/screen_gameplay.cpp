@@ -37,6 +37,7 @@ void InitGameplayScreen()
     AnimationMgr::Instance().LoadMultipleModelAnimations(animModels, NUM_MODELS);
 
     player = new Player();
+    player->SetCamera(&cam);
     EntityMgr::Instance().AddEntity(player);
 
 	MakeLevel();
@@ -44,11 +45,6 @@ void InitGameplayScreen()
 
 void UpdateGameplayScreen()
 {
-    cam.FollowEntity(*player, TICK, {0.0f, 100.0f, -80.0f});
-	// Update the shader with the camera view vector
-	float cameraPos[3] = { cam.GetPosition().x, cam.GetPosition().y, cam.GetPosition().z };
-	SetShaderValue(g_lighting, g_lighting.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
-
     if (ControllerMgr::ESCAPE.GetPressed())
     {
         ShowCursor();
@@ -83,6 +79,11 @@ void UpdateGameplayScreen()
     {
         entity->UpdateEntity();
     }
+
+    cam.FollowEntity3rdPerson(*player, TICK, { 0.0f, 100.0f, -80.0f });
+    // Update the shader with the camera view vector
+    float cameraPos[3] = { cam.GetPosition().x, cam.GetPosition().y, cam.GetPosition().z };
+    SetShaderValue(g_lighting, g_lighting.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 }
 
 void DrawGameplayScreen()

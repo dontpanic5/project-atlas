@@ -21,6 +21,7 @@ void UpdateTitleScreen()
         ControllerMgr::Instance().SetCurControlDevice(CONTROL_DEVICE::KEYBOARD);
         controllerPrompt = false;
     }
+/* no mouse movement for this game
 #ifndef PLATFORM_WEB
     else if (controllerPrompt && ControllerMgr::Instance().RMB.GetPressed())
     {
@@ -28,6 +29,7 @@ void UpdateTitleScreen()
         controllerPrompt = false;
     }
 #endif
+*/
     else if (START.GetPressed())
     {
         HideCursor();
@@ -44,14 +46,17 @@ void DrawTitleScreen()
         sprintf(
             msg,
             "PRESS %s TO PLAY ON CONTROLLER\n"
+/* no mouse movement for this game
 #ifndef PLATFORM_WEB
             "OR PRESS %s TO PLAY ON MOUSE\n"
 #endif // !PLATFORM_WEB
+*/
             "OR PRESS %s TO PLAY ON KEYBOARD\n",
             ControllerMgr::Instance().A.GetName(),
+/* no mouse movement for this game
 #ifndef PLATFORM_WEB
             ControllerMgr::Instance().RMB.GetName(),
-#endif // !PLATFORM_WEB
+#endif // !PLATFORM_WEB*/
             ControllerMgr::Instance().SPACEBAR.GetName()
         );
         DrawUiText(msg, 0.2f, 0.7f, FontSize::s);
