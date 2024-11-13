@@ -5,7 +5,7 @@
 #include "Gameplay.h"
 
 Player::Player(bool drawBounds)
-    : Entity(S_PLAYER, 40.0f, drawBounds, true)
+    : Entity(nullptr, 40.0f, drawBounds, true)
 {
     SetCurAnim(ANIM_IDLE);
     m_animLoop = true;
@@ -20,11 +20,6 @@ bool Player::collisionCheck(BoundingBox bb)
 int Player::GetTypeId() const
 {
     return ET_PLAYER;
-}
-
-void Player::SetCamera(GameCamera* cam)
-{
-    m_cam = cam;
 }
 
 void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
@@ -68,14 +63,14 @@ void Player::Move()
     pos += toAdd;
     SetPos(pos);
 
-    if (DidMove() && length > 0.8f)
+    if (DidMove() /* && length > 0.8f*/)
     {
         SetCurAnim(ANIM_RUN);
     }
-    else if (DidMove())
+    /*else if (DidMove())
     {
         SetCurAnim(ANIM_WALK);
-    }
+    }*/
     else
     {
         SetCurAnim(ANIM_IDLE);

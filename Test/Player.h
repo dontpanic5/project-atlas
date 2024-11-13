@@ -2,7 +2,6 @@
 #define PLAYER_H_INCLUDED
 
 #include "Entity.h"
-class GameCamera;
 
 class Player : public Entity
 {
@@ -12,19 +11,12 @@ public:
 	bool collisionCheck(BoundingBox bb);
 	int GetTypeId() const;
 
-	void SetCamera(GameCamera* cam);
-
 	void UpdateEntity(bool doNotMove = false, bool doNotAnimation = false);
 
-	static constexpr const char* S_PLAYER = "resources/human_1.m3d";
-	static constexpr int ANIM_IDLE = 2;
-	static constexpr int ANIM_PUNCH = 4;
-	static constexpr int ANIM_RUN = 6;
-	static constexpr int ANIM_WALK = 8;
+	static constexpr int ANIM_IDLE = 0;
+	static constexpr int ANIM_RUN = 1;
 
 protected:
 	void Move();
-
-	GameCamera* m_cam;
 };
 #endif // !PLAYER_H_INCLUDED

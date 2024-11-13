@@ -31,13 +31,15 @@ void InitGameplayScreen()
 	// create one light point above
 	lights[0] = CreateLight(LIGHT_POINT, { 1000.0f, 1000.0f, 1000.0f }, Vector3Zero(), { 20, 20, 20, 255 }, g_lighting);
 
-    constexpr int NUM_MODELS = 1;
+    /*constexpr int NUM_MODELS = 1;
     const char* animModels[NUM_MODELS] = { Player::S_PLAYER };
 
-    AnimationMgr::Instance().LoadMultipleModelAnimations(animModels, NUM_MODELS);
+    AnimationMgr::Instance().LoadMultipleModelAnimations(animModels, NUM_MODELS);*/
 
     player = new Player();
     player->SetCamera(&cam);
+    player->SetBillboardAnim("resources/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/idle/idle_%d.png", Player::ANIM_IDLE, 12);
+    player->SetBillboardAnim("resources/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/run/run_%d.png", Player::ANIM_RUN, 10);
     EntityMgr::Instance().AddEntity(player);
 
 	MakeLevel();
@@ -89,6 +91,7 @@ void UpdateGameplayScreen()
 void DrawGameplayScreen()
 {
     ClearBackground({ 40,40,40,255 });
+    
     cam.Begin3DDrawing();
 
     for (auto& entity : EntityMgr::Instance().m_entities)
