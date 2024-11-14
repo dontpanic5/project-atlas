@@ -38,8 +38,8 @@ void InitGameplayScreen()
 
     player = new Player();
     player->SetCamera(&cam);
-    player->SetBillboardAnim("resources/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/idle/idle_%d.png", Player::ANIM_IDLE, 12);
-    player->SetBillboardAnim("resources/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/run/run_%d.png", Player::ANIM_RUN, 10);
+    player->SetBillboardAnim("resources/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/idle/idle_%d.png", Player::ANIM_IDLE, 12, 3);
+    player->SetBillboardAnim("resources/Elementals_Leaf_ranger_Free_v1.0/animations/PNG/run/run_%d.png", Player::ANIM_RUN, 10, 3);
     EntityMgr::Instance().AddEntity(player);
 
 	MakeLevel();
