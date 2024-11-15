@@ -4,6 +4,7 @@
 enum ENTITY_TYPES
 {
 	ET_PLAYER,
+	ET_WORLD,
 };
 
 #endif // !GAMEPLAY_H_INCLUDED

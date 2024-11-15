@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 class GameCamera;
+class World;
 
 class Player : public Entity
 {
@@ -13,6 +14,8 @@ public:
 	int GetTypeId() const;
 
 	void SetCamera(GameCamera* cam);
+
+	void SetWorld(World* world);
 
 	void UpdateEntity(bool doNotMove = false, bool doNotAnimation = false);
 
@@ -26,5 +29,7 @@ protected:
 	void Move();
 
 	GameCamera* m_cam;
+
+	World* m_earth;
 };
 #endif // !PLAYER_H_INCLUDED

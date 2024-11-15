@@ -7,6 +7,7 @@
 #include "EntityMgr.h"
 #include "Ground.h"
 #include "Player.h"
+#include "World.h"
 
 static int finishScreen = 0;
 
@@ -39,6 +40,11 @@ void InitGameplayScreen()
     player = new Player();
     player->SetCamera(&cam);
     EntityMgr::Instance().AddEntity(player);
+
+    World* world = new World(GenMeshSphere(World::DEFAULT_RADIUS, 20, 20), player, true);
+    EntityMgr::Instance().AddEntity(world);
+
+    player->SetWorld(world);
 
 	MakeLevel();
 }

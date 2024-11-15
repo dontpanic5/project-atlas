@@ -3,6 +3,7 @@
 #include "GameCamera.h"
 #include "GameControls.h"
 #include "Gameplay.h"
+#include "World.h"
 
 Player::Player(bool drawBounds)
     : Entity(S_PLAYER, 40.0f, drawBounds, true)
@@ -27,10 +28,20 @@ void Player::SetCamera(GameCamera* cam)
     m_cam = cam;
 }
 
+void Player::SetWorld(World* world)
+{
+    m_earth = world;
+}
+
 void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
 {
     if (!doNotMove)
         Move();
+
+    if (ControllerMgr::SPACEBAR.GetPressed())
+    {
+        m_earth->Throw();
+    }
 
     Entity::UpdateEntity();
 }

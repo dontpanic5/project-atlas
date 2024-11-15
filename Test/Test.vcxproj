@@ -139,12 +139,14 @@
     <ClCompile Include="screen_gameover.cpp" />
     <ClCompile Include="screen_gameplay.cpp" />
     <ClCompile Include="screen_title.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameControls.h" />
     <ClInclude Include="Gameplay.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="screens.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
