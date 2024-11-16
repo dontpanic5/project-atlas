@@ -2,7 +2,8 @@
 #define WORLD_H_INCLUDED
 
 #include "Entity.h"
-class Mesh;
+struct Mesh;
+struct Vector3;
 class Player;
 
 class World : public Entity
@@ -14,18 +15,25 @@ public:
 
 	void Move();
 
-	void Throw();
+	void Throw(Vector3 direction);
+
+	void CheckLevelCollisions();
 
 	bool collisionCheck(BoundingBox bb) override;
 
 	int GetTypeId() const override;
 
-	static constexpr float DEFAULT_RADIUS = 30.0f;
+	float GetRadius() const;
+
+	bool m_attached = true;
+
+	static constexpr float DEFAULT_RADIUS = 20.0f;
 
 protected:
 	float m_radius = DEFAULT_RADIUS;
-	bool m_attached = true;
 	const Player* m_player = nullptr;
+	Vector3 m_throwAccel = Vector3Zero();
+	bool m_atRest = false;
 };
 
 #endif // !WORLD_H_INCLUDED

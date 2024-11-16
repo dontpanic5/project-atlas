@@ -40,7 +40,19 @@ void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
 
     if (ControllerMgr::SPACEBAR.GetPressed())
     {
-        m_earth->Throw();
+        Vector3 dir = { 0.0f, 1.0f, 0.8f };
+        dir = Vector3RotateByQuaternion(dir, m_rot);
+        dir = Vector3Normalize(dir);
+        dir *= 350.0f;
+        m_earth->Throw(dir);
+        m_throwTime = GetTime();
+    }
+
+    if (!m_earth->m_attached && CheckCollisionBoxSphere(GetBoundingBox(), m_earth->GetPos(), m_earth->GetRadius()))
+    {
+        double now = GetTime();
+        if (now - m_throwTime > THROW_BUFFER)
+            m_earth->m_attached = true;
     }
 
     Entity::UpdateEntity();
@@ -71,7 +83,7 @@ void Player::Move()
 
     Vector3 pos = GetPos();
 
-    float length = Vector2Length({ moveX, moveY });
+    float length = Vector2Length({ moveX, moveY }) * 2.0f;
 
     Vector3 toAdd = Vector3RotateByQuaternion({ 0.0f, 0.0f, length }, GetRot());
 

@@ -31,5 +31,8 @@ protected:
 	GameCamera* m_cam;
 
 	World* m_earth;
+
+	double m_throwTime = -1.0;
+	static constexpr double THROW_BUFFER = 0.5;
 };
 #endif // !PLAYER_H_INCLUDED
