@@ -5,6 +5,7 @@ enum ENTITY_TYPES
 {
 	ET_PLAYER,
 	ET_WORLD,
+	ET_POWERUP,
 };
 
 #endif // !GAMEPLAY_H_INCLUDED

@@ -1,6 +1,7 @@
 #include "World.h"
 #include "raylib.h"
 #include "Constants.h"
+#include "EntityMgr.h"
 #include "LevelMgr.h"
 #include "EnvironmentalObject.h"
 #include "Gameplay.h"
@@ -89,6 +90,20 @@ void World::CheckLevelCollisions()
 
 			if (Vector3Length(m_velocity) < 1.0f)
 				m_atRest = true;
+		}
+	}
+}
+
+void World::CheckEntityCollisions()
+{
+	for (auto& entity : EntityMgr::Instance().m_entities)
+	{
+		if (!entity->isSpawned())
+			continue;
+
+		if (entity->collisionCheck(GetBoundingBox()))
+		{
+			
 		}
 	}
 }

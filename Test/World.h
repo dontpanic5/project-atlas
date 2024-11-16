@@ -18,6 +18,7 @@ public:
 	void Throw(Vector3 direction);
 
 	void CheckLevelCollisions();
+	void CheckEntityCollisions();
 
 	bool collisionCheck(BoundingBox bb) override;
 
