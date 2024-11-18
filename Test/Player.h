@@ -10,8 +10,11 @@ class Player : public Entity
 public:
 	Player(bool drawBounds = false);
 
-	bool collisionCheck(BoundingBox bb);
-	int GetTypeId() const;
+	bool collisionCheck(BoundingBox bb) override;
+	bool collisionCheck(Vector3 pos, float radius) override;
+	int GetTypeId() const override;
+
+	double GetThrowPowerUp() const;
 
 	void SetCamera(GameCamera* cam);
 
@@ -28,11 +31,14 @@ public:
 protected:
 	void Move();
 
+	void CheckLevelCollisions();
+
 	GameCamera* m_cam;
 
 	World* m_earth;
 
+	double m_throwPowerUp = -1.0;
 	double m_throwTime = -1.0;
-	static constexpr double THROW_BUFFER = 0.5;
+	static constexpr double THROW_BUFFER = 1.0;
 };
 #endif // !PLAYER_H_INCLUDED

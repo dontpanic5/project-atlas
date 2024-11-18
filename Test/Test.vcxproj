@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameControls.cpp" />
+    <ClCompile Include="LevelObj.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PowerUp.cpp" />
@@ -145,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="GameControls.h" />
     <ClInclude Include="Gameplay.h" />
+    <ClInclude Include="LevelObj.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PowerUp.h" />
     <ClInclude Include="screens.h" />

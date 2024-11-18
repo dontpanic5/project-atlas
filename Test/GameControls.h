@@ -8,5 +8,7 @@ extern AxisBinding		MOVE_X;
 extern AxisBinding		MOVE_Y;
 extern ButtonBinding	THROW;
 extern ButtonBinding	RELOAD_LEVEL;
+extern ButtonBinding	RECALL;
+extern ButtonBinding	TOGGLE_CAM;
 
 #endif // !GAME_CONTROLS_H_INCLUDED

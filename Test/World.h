@@ -2,16 +2,16 @@
 #define WORLD_H_INCLUDED
 
 #include "Entity.h"
-struct Mesh;
 struct Vector3;
 class Player;
 
 class World : public Entity
 {
 public:
-	World(Mesh mesh, const Player* atlas, bool attached);
+	World(const Player* atlas, bool attached);
 
 	void UpdateEntity(bool doNotMove = false, bool doNotAnimation = false) override;
+	void DrawEntity(float offsetY = 0.0f) override;
 
 	void Move();
 
@@ -21,6 +21,7 @@ public:
 	void CheckEntityCollisions();
 
 	bool collisionCheck(BoundingBox bb) override;
+	bool collisionCheck(Vector3 pos, float radius) override;
 
 	int GetTypeId() const override;
 
@@ -28,13 +29,13 @@ public:
 
 	bool m_attached = true;
 
-	static constexpr float DEFAULT_RADIUS = 20.0f;
-
 protected:
-	float m_radius = DEFAULT_RADIUS;
+	float m_radius = -1.0f;
 	const Player* m_player = nullptr;
 	Vector3 m_throwAccel = Vector3Zero();
 	bool m_atRest = false;
+
+	static constexpr const char* S_MODEL = "resources/earth ball.m3d";
 };
 
 #endif // !WORLD_H_INCLUDED

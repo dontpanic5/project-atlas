@@ -1,5 +1,7 @@
 #include "Player.h"
 #include "raylib.h"
+#include "LevelMgr.h"
+#include "EnvironmentalObject.h"
 #include "GameCamera.h"
 #include "GameControls.h"
 #include "Gameplay.h"
@@ -18,9 +20,25 @@ bool Player::collisionCheck(BoundingBox bb)
     return CheckCollisionBoxes(GetBoundingBox(), bb);
 }
 
+bool Player::collisionCheck(Vector3 pos, float radius)
+{
+    return CheckCollisionBoxSphere(GetBoundingBox(), pos, radius);
+}
+
 int Player::GetTypeId() const
 {
     return ET_PLAYER;
+}
+
+double Player::GetThrowPowerUp() const
+{
+    if (m_throwPowerUp == -1.0)
+        return 0.0;
+
+    double power = GetTime() - m_throwPowerUp;
+    if (power > 2)
+        power = 2;
+    return power;
 }
 
 void Player::SetCamera(GameCamera* cam)
@@ -38,14 +56,27 @@ void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
     if (!doNotMove)
         Move();
 
-    if (ControllerMgr::SPACEBAR.GetPressed())
+    CheckLevelCollisions();
+
+    if (ControllerMgr::SPACEBAR.GetPressed() && m_earth->m_attached)
+    {
+        m_throwPowerUp = GetTime();
+        //printf("m_throwPowerUp %f\n", m_throwPowerUp);
+    }
+
+    if (ControllerMgr::SPACEBAR.GetReleased() && m_earth->m_attached && m_throwPowerUp != -1.0)
     {
         Vector3 dir = { 0.0f, 1.0f, 0.8f };
         dir = Vector3RotateByQuaternion(dir, m_rot);
         dir = Vector3Normalize(dir);
-        dir *= 350.0f;
+        double nowTime = GetTime();
+        //printf("nowTime %f\n", nowTime);
+        double powerUpMult = GetThrowPowerUp();
+        float power = 325.0f * (float) powerUpMult;
+        dir *= power;
         m_earth->Throw(dir);
         m_throwTime = GetTime();
+        m_throwPowerUp = -1.0;
     }
 
     if (!m_earth->m_attached && CheckCollisionBoxSphere(GetBoundingBox(), m_earth->GetPos(), m_earth->GetRadius()))
@@ -53,6 +84,10 @@ void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
         double now = GetTime();
         if (now - m_throwTime > THROW_BUFFER)
             m_earth->m_attached = true;
+    }
+    else if (!m_earth->m_attached && ControllerMgr::SPACEBAR.GetDown())
+    {
+        m_earth->m_attached = true;
     }
 
     Entity::UpdateEntity();
@@ -102,5 +137,31 @@ void Player::Move()
     else
     {
         SetCurAnim(ANIM_IDLE);
+    }
+}
+
+void Player::CheckLevelCollisions()
+{
+    for (auto& envObj : LevelMgr::Instance().m_envObjs)
+    {
+        if (!envObj->IsCollidable())
+            continue;
+        BoundingBox bb = GetBoundingBox();
+        if (envObj->collisionCheck(GetBoundingBox()))
+        {
+            /*
+            printf("m_crashStart: %f\n", m_crashStart);
+            printf("time elapsed: %f\n", GetTime() - m_crashStart);
+            printf("envObj: %p, m_lastCrashObj: %p\n", envObj, m_lastCrashObj);
+            printf("dist: %f\n", Vector3Distance(m_pos, m_crashPos));
+            */
+
+            Vector3 veloNorm = Vector3Normalize(m_prevPos - GetPos());
+            float distance = envObj->getOverlapDistance(bb, veloNorm);
+            Vector3 toMove = Vector3Scale(veloNorm, distance * 10.0f);
+            SetPos(Vector3Add(GetPos(), toMove));
+
+            //SetPos(m_prevPos);
+        }
     }
 }

@@ -4,22 +4,28 @@
 #include "EntityMgr.h"
 #include "LevelMgr.h"
 #include "EnvironmentalObject.h"
+#include "BattyEngine.h"
 #include "Gameplay.h"
 #include "Player.h"
 
-World::World(Mesh mesh, const Player* atlas, bool attached)
-	: Entity(mesh, 1.0f, true, true, true, { 0.0f, 0.0f, 0.0f}),
+World::World(const Player* atlas, bool attached)
+	: Entity(S_MODEL, 30.0f, true, true, true),
 	m_attached(attached), m_player(atlas)
 {
 	_ASSERT(atlas);
 
-	Texture2D world = LoadTexture("resources/Screenshot 2024-11-15 202922.png");
+	Texture2D world = LoadTexture("resources/2k_earth_daymap.png");
 
 	SetMaterialTexture(&m_model.materials[0], MATERIAL_MAP_DIFFUSE, world);
+	SetMaterialTexture(&m_model.materials[1], MATERIAL_MAP_DIFFUSE, world);
+	m_model.materials[0].shader = g_lighting;
+	m_model.materials[1].shader = g_lighting;
 
 	Move();
 
 	SetTransformAndBb();
+	Vector3 dist = m_bb.max - m_bb.min;
+	m_radius = Vector3Length(dist) / 2.0f;
 }
 
 void World::UpdateEntity(bool doNotMove, bool doNotAnimation)
@@ -32,9 +38,19 @@ void World::UpdateEntity(bool doNotMove, bool doNotAnimation)
 		Move();
 	}
 
-
+	CheckEntityCollisions();
 
 	Entity::UpdateEntity(false, false);
+
+	Vector3 dist = m_bb.max - m_bb.min;
+	m_radius = Vector3Length(dist) / 4.0f * 1.2f;
+}
+
+void World::DrawEntity(float offsetY)
+{
+	Entity::DrawEntity(m_radius * -1.0f);
+
+	DrawSphereWires(m_pos, m_radius, 10, 10, GREEN);
 }
 
 void World::Move()
@@ -44,7 +60,7 @@ void World::Move()
 		m_velocity = Vector3Zero();
 		m_atRest = false;
 		Vector3 atlasPos = m_player->GetPos();
-		atlasPos.y += 70.0f;
+		atlasPos.y += 40.0f + m_radius;
 		SetPos(atlasPos);
 	}
 	else if (!m_atRest)
@@ -88,7 +104,12 @@ void World::CheckLevelCollisions()
 
 			m_velocity = Vector3Reflect(m_velocity, rc.normal) * 0.8f;
 
-			if (Vector3Length(m_velocity) < 1.0f)
+			float overlap = envObj->getOverlapDistance(m_pos, m_radius);
+			Vector3 toMove = rc.normal * overlap;
+			SetPos(GetPos() + toMove);
+
+			if (Vector3Length(m_velocity) < 1.5f &&
+					Vector3Equals(rc.normal, { 0.0f, 1.0f, 0.0f }))
 				m_atRest = true;
 		}
 	}
@@ -101,9 +122,13 @@ void World::CheckEntityCollisions()
 		if (!entity->isSpawned())
 			continue;
 
-		if (entity->collisionCheck(GetBoundingBox()))
+		if (entity->collisionCheck(m_pos, m_radius))
 		{
-			
+			if (entity->GetTypeId() == ET_POWERUP)
+			{
+				entity->ResetEntity();
+				m_scale *= 1.5f;
+			}
 		}
 	}
 }
@@ -111,6 +136,11 @@ void World::CheckEntityCollisions()
 bool World::collisionCheck(BoundingBox bb)
 {
 	return CheckCollisionBoxSphere(bb, m_pos, m_radius);
+}
+
+bool World::collisionCheck(Vector3 pos, float radius)
+{
+	return CheckCollisionSpheres(m_pos, m_radius, pos, radius);
 }
 
 int World::GetTypeId() const
