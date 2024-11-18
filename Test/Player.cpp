@@ -56,6 +56,8 @@ void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
     if (!doNotMove)
         Move();
 
+    Entity::UpdateEntity();
+
     CheckLevelCollisions();
 
     if (ControllerMgr::SPACEBAR.GetPressed() && m_earth->m_attached)
@@ -89,8 +91,6 @@ void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
     {
         m_earth->m_attached = true;
     }
-
-    Entity::UpdateEntity();
 }
 
 void Player::Move()
@@ -124,6 +124,7 @@ void Player::Move()
 
 
     pos += toAdd;
+    if (Vector3Length(toAdd) > 0.0f)
     SetPos(pos);
 
     if (DidMove() && length > 0.8f)
@@ -156,10 +157,25 @@ void Player::CheckLevelCollisions()
             printf("dist: %f\n", Vector3Distance(m_pos, m_crashPos));
             */
 
-            Vector3 veloNorm = Vector3Normalize(m_prevPos - GetPos());
-            float distance = envObj->getOverlapDistance(bb, veloNorm);
-            Vector3 toMove = Vector3Scale(veloNorm, distance * 10.0f);
-            SetPos(Vector3Add(GetPos(), toMove));
+            Vector3 veloNorm = Vector3Normalize(GetPos() - m_prevPos);
+
+            BoundingBox envBb = envObj->GetBoundingBox();
+            Vector3 middle = Vector3Lerp(envBb.min, envBb.max, 0.5f);
+            Vector3 dir = middle - GetPos();
+
+            Ray ray;
+            ray.position = GetPos();
+            ray.position.y += 5.0f; // raise off the ground
+            ray.direction = Vector3Normalize(dir);
+
+            RayCollision rayCollison = GetRayCollisionBox(ray, envObj->GetBoundingBox());
+
+            if (rayCollison.hit)
+            {
+                float distance = envObj->getOverlapDistance(bb, rayCollison.normal);
+                Vector3 toMove = Vector3Scale(rayCollison.normal, distance);
+                SetPos(Vector3Add(GetPos(), toMove));
+            }
 
             //SetPos(m_prevPos);
         }

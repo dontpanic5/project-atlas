@@ -51,10 +51,6 @@ void MakeLevel(int level)
         _ASSERT(envEntitiesIdx < 32);
         EntityMgr::Instance().AddEntity(powerUp);
     }
-    else if (level == 2)
-    {
-
-    }
 }
 
 void InitGameplayScreen()
