@@ -32,7 +32,9 @@ void PowerUp::DrawEntity(float offsetY)
 {
 	Entity::DrawEntity();
 
+#ifdef DEBUG
 	DrawSphereWires(m_pos, m_radius, 10, 10, GREEN);
+#endif
 }
 
 int PowerUp::GetTypeId() const

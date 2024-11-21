@@ -58,15 +58,16 @@ void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
 
     Entity::UpdateEntity();
 
+    //printf("player pos x: %f y: %f z: %f\n", GetPos().x, GetPos().y, GetPos().z);
+
     CheckLevelCollisions();
 
-    if (ControllerMgr::SPACEBAR.GetPressed() && m_earth->m_attached)
+    if (THROW.GetPressed() && m_earth->m_attached)
     {
         m_throwPowerUp = GetTime();
-        //printf("m_throwPowerUp %f\n", m_throwPowerUp);
     }
 
-    if (ControllerMgr::SPACEBAR.GetReleased() && m_earth->m_attached && m_throwPowerUp != -1.0)
+    if (THROW.GetReleased() && m_earth->m_attached && m_throwPowerUp != -1.0)
     {
         Vector3 dir = { 0.0f, 1.0f, 0.8f };
         dir = Vector3RotateByQuaternion(dir, m_rot);
@@ -87,7 +88,7 @@ void Player::UpdateEntity(bool doNotMove, bool doNotAnimation)
         if (now - m_throwTime > THROW_BUFFER)
             m_earth->m_attached = true;
     }
-    else if (!m_earth->m_attached && ControllerMgr::SPACEBAR.GetDown())
+    else if (!m_earth->m_attached && RECALL.GetDown())
     {
         m_earth->m_attached = true;
     }
@@ -148,6 +149,7 @@ void Player::CheckLevelCollisions()
         if (!envObj->IsCollidable())
             continue;
         BoundingBox bb = GetBoundingBox();
+        //printf("player bb min %f %f %f max %f %f %f\n", bb.min.x, bb.min.y, bb.min.z, bb.max.x, bb.max.y, bb.max.z);
         if (envObj->collisionCheck(GetBoundingBox()))
         {
             /*
@@ -160,8 +162,13 @@ void Player::CheckLevelCollisions()
             Vector3 veloNorm = Vector3Normalize(GetPos() - m_prevPos);
 
             BoundingBox envBb = envObj->GetBoundingBox();
+            //printf("obj bb min %f %f %f max %f %f %f\n", envBb.min.x, envBb.min.y, envBb.min.z, envBb.max.x, envBb.max.y, envBb.max.z);
             Vector3 middle = Vector3Lerp(envBb.min, envBb.max, 0.5f);
             Vector3 dir = middle - GetPos();
+            // this is too weird, someday do all this better
+            // need to be able to handle collision with the ground
+            if (dir == Vector3Zero())
+                continue;
 
             Ray ray;
             ray.position = GetPos();
@@ -172,6 +179,7 @@ void Player::CheckLevelCollisions()
 
             if (rayCollison.hit)
             {
+                printf("hit\n");
                 float distance = envObj->getOverlapDistance(bb, rayCollison.normal);
                 Vector3 toMove = Vector3Scale(rayCollison.normal, distance);
                 SetPos(Vector3Add(GetPos(), toMove));

@@ -5,6 +5,7 @@
 #include "LevelMgr.h"
 #include "ControllerMgr.h"
 #include "EntityMgr.h"
+#include "Ui.h"
 #include "Ground.h"
 #include "LevelObj.h"
 #include "GameControls.h"
@@ -21,39 +22,159 @@ static bool worldCam = false;
 static bool justToggledCam = false;
 
 static constexpr int TOT_LEVELS = 2;
-static int curLevel = 1;
+static int curLevel = 3;
 
 static Light lights[MAX_LIGHTS] = { 0 };
 
 static Player* player;
 static World* world;
 
-static constexpr int MAX_ENV_ENTITIES = 32;
+static constexpr int MAX_ENV_ENTITIES = 128;
 static int envEntitiesIdx = 0;
 static Entity* environmentalEntities[MAX_ENV_ENTITIES];
 
 static int powerUpsCollected = 0;
+static bool inLevelTransition = false;
 
 void MakeLevel(int level)
 {
 	// add environmental objects here
-	LevelMgr::Instance().AddEnvObj(new Ground(1500));
-
-    if (level == 1)
+	LevelMgr::Instance().AddEnvObj(new Ground(2500));
+    float radius = 10.0f;
+    PowerUp* powerUp = nullptr;
+    switch (level)
     {
+    case 1:
         LevelMgr::Instance().AddEnvObj(new LevelObj({ 300.0f, 0.0f, -500.0f }, 200.0f, 1000.0f, 1000.0f));
-        LevelMgr::Instance().AddEnvObj(new LevelObj({ -500.0f, 0.0f, -500.0f}, 200.0f, 1000.0f, 1000.0f));
-        LevelMgr::Instance().AddEnvObj(new LevelObj({-300.0f, 0.0f, 400.0f}, 500.0f, 100.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -500.0f, 0.0f, -500.0f }, 200.0f, 1000.0f, 1000.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 400.0f }, 500.0f, 100.0f, 100.0f));
 
-        float radius = 10.0f;
-        PowerUp* powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 200.0f });
+        radius = 10.0f;
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 200.0f });
         environmentalEntities[envEntitiesIdx++] = powerUp;
-        _ASSERT(envEntitiesIdx < 32);
         EntityMgr::Instance().AddEntity(powerUp);
-    }
-    else if (level == 2)
-    {
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 100.0f, radius, 200.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+#ifndef PLATFORM_WEB
+        _ASSERT(envEntitiesIdx < 32);
+#endif // !PLATFORM_WEB
+        break;
+    case 2:
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -500.0f, 0.0f, 400.0f }, 1000.0f, 600.0f, 100.0f));
 
+        radius = 10.0f;
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, 100.0f, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, 200.0f, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -200.0f, 150.0f, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 200.0f, 150.0f, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+#ifndef PLATFORM_WEB
+        _ASSERT(envEntitiesIdx < 32);
+#endif // !PLATFORM_WEB
+        break;
+    case 3:
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 200.0f }, 600.0f, 50.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 300.0f }, 100.0f, 50.0f, 200.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 500.0f }, 600.0f, 50.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 200.0f, 0.0f,  300.0f }, 100.0f, 50.0f, 200.0f));
+
+        radius = 10.0f;
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 100.0f, radius, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -100.0f, radius, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 450.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        break;
+    case 4:
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, -200.0f }, 600.0f, 50.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, -100.0f }, 100.0f, 50.0f, 200.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 100.0f }, 600.0f, 50.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 200.0f, 0.0f,  -100.0f }, 100.0f, 50.0f, 200.0f));
+
+        radius = 10.0f;
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, -400.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -400.0f, radius, 0.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 400.0f, radius, 0.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        break;
+    case 5:
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 1000.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 100.0f, radius, 1000.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -100.0f, radius, 1000.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 1100.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 1200.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 250.0f, 0.0f, -600.0f }, 100.0f, 1000.0f, 1200.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -250.0f, 0.0f, -600.0f }, 500.0f, 1000.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -350.0f, 0.0f, -600.0f }, 100.0f, 1000.0f, 1200.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -250.0f, 0.0f, 500.0f }, 500.0f, 100.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -250.0f, 100.0f, 500.0f }, 150.0f, 500.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 150.0f, 100.0f, 500.0f }, 100.0f, 200.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -250.0f, 300.0f, 500.0f }, 700.0f, 500.0f, 100.0f));
+        break;
+    case 6:
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 100.0f, radius, 350.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 285.0f, radius, 375.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -225.0f, radius, 300.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -200.0f, radius, 300.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -225.0f, radius, 275.0f });
+        environmentalEntities[envEntitiesIdx++] = powerUp;
+        EntityMgr::Instance().AddEntity(powerUp);
+
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -450.0f, 0.0f, -500.0f }, 900.0f, 1000.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -450.0f, 0.0f, -400.0f }, 100.0f, 1000.0f, 800.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -450.0f, 0.0f, 400.0f }, 900.0f, 200.0f, 100.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 350.0f, 0.0f, -400.0f }, 100.0f, 1000.0f, 800.0f));
+
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 225.0f, 0.0f, 300.0f }, 150.0f, 100.0f, 50.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 125.0f, 0.0f, 150.0f }, 100.0f, 100.0f, 250.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ 0.0f, 0.0f, 150.0f }, 150.0f, 100.0f, 150.0f));
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -100.0f, 0.0f, 75.0f }, 100.0f, 100.0f, 325.0f));
+
+        LevelMgr::Instance().AddEnvObj(new LevelObj({ -375.0f, 0.0f, 75.0f }, 225.0f, 100.0f, 100.0f));
+        break;
     }
 }
 
@@ -79,6 +200,8 @@ void InitGameplayScreen()
     EntityMgr::Instance().AddEntity(world, false);
 
     player->SetWorld(world);
+
+    cam.FollowEntity3rdPerson(*player, TICK, { 0.0f, 75.0f, -80.0f }, true);
 
 	MakeLevel(curLevel);
 }
@@ -107,9 +230,9 @@ void UpdateGameplayScreen()
         ControllerMgr::Instance().TrapCursor(true);
     }
 
-#ifdef DEBUG
     if (RELOAD_LEVEL.GetPressed())
     {
+        inLevelTransition = false;
         LevelMgr::Instance().Unload();
         for (int i = 0; i < MAX_ENV_ENTITIES; i++)
         {
@@ -117,15 +240,49 @@ void UpdateGameplayScreen()
             {
                 delete environmentalEntities[i];
                 environmentalEntities[i] = nullptr;
+                EntityMgr::Instance().m_entities.pop_back();
             }
         }
         MakeLevel(curLevel);
+        world->resetRadius();
+        player->SetPos(Vector3Zero());
     }
-#endif // DEBUG
 
-    for (auto& entity : EntityMgr::Instance().m_entities)
+    if (inLevelTransition)
     {
-        entity->UpdateEntity();
+        if (THROW.GetPressed())
+        {
+            inLevelTransition = false;
+            world->resetRadius();
+            curLevel++;
+            LevelMgr::Instance().Unload();
+
+            for (int i = 0; i < MAX_ENV_ENTITIES; i++)
+            {
+                if (environmentalEntities[i] != nullptr)
+                {
+                    delete environmentalEntities[i];
+                    environmentalEntities[i] = nullptr;
+                    EntityMgr::Instance().m_entities.pop_back();
+                }
+            }
+
+            MakeLevel(curLevel);
+            player->SetPos(Vector3Zero());
+            cam.FollowEntity3rdPerson(*player, TICK, { 0.0f, 75.0f, -80.0f }, true);
+        }
+    }
+
+    if (!inLevelTransition)
+    {
+        for (auto& entity : EntityMgr::Instance().m_entities)
+        {
+            entity->UpdateEntity();
+        }
+    }
+    else
+    {
+        world->LevelTransition();
     }
 
     if (TOGGLE_CAM.GetPressed())
@@ -134,12 +291,13 @@ void UpdateGameplayScreen()
         justToggledCam = true;
     }
 
-    if (world->m_attached || !worldCam)
+    if (!inLevelTransition && (world->m_attached || !worldCam))
     {
-        cam.FollowEntity3rdPerson(*player, TICK, { 0.0f, 100.0f, -80.0f }, justToggledCam);
+        cam.FollowEntity3rdPerson(*player, TICK, { 0.0f, 75.0f, -80.0f }, justToggledCam);
     }
     else
         cam.FollowEntity(*world, TICK, { 0.0f,100.0f,-80.0f});
+    //printf("cam pos x: %f y: %f z: %f\n", cam.GetPosition().x, cam.GetPosition().y, cam.GetPosition().z);
     justToggledCam = false;
     // Update the shader with the camera view vector
     float cameraPos[3] = { cam.GetPosition().x, cam.GetPosition().y, cam.GetPosition().z };
@@ -148,7 +306,7 @@ void UpdateGameplayScreen()
     bool allDone = true;
     for (int i = 0; i < envEntitiesIdx; i++)
     {
-        if (environmentalEntities[i]->isSpawned())
+        if (environmentalEntities[i] && environmentalEntities[i]->isSpawned())
         {
             allDone = false;
             break;
@@ -156,7 +314,9 @@ void UpdateGameplayScreen()
     }
 
     if (allDone)
-        printf("stuff, next level\n");
+    {
+        inLevelTransition = true;
+    }
 }
 
 void DrawGameplayScreen()
@@ -181,6 +341,13 @@ void DrawGameplayScreen()
     //printf("power %f\n", power);
     int startMod = (int)(power * 250.0);
     DrawRectangle(50 + startMod, GetRenderHeight() - 200, 500 - startMod, 50, BLACK);
+
+    if (inLevelTransition)
+    {
+        char text[512] = "You have grown the World to a magnificent size.\n" \
+            "Now you must repeat your task as is your eternal punishment.\n";
+        DrawUiText(text, 0.1f, 0.25f, FontSize::m);
+    }
 }
 
 void UnloadGameplayScreen()

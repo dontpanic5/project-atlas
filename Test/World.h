@@ -2,6 +2,7 @@
 #define WORLD_H_INCLUDED
 
 #include "Entity.h"
+#include <external/miniaudio.h>
 struct Vector3;
 class Player;
 
@@ -17,6 +18,8 @@ public:
 
 	void Throw(Vector3 direction);
 
+	void LevelTransition();
+
 	void CheckLevelCollisions();
 	void CheckEntityCollisions();
 
@@ -26,6 +29,7 @@ public:
 	int GetTypeId() const override;
 
 	float GetRadius() const;
+	void resetRadius();
 
 	bool m_attached = true;
 

@@ -70,6 +70,27 @@ void DrawTitleScreen()
             START.GetControlName()
         );
         DrawUiText(msg, 0.2f, 0.7f, FontSize::m);
+
+        const char controlFormat[] = "%s WITH %s\n";
+        char format[512];
+        memset(format, 0, sizeof(format));
+        strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
+        strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
+        strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
+        strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
+        strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
+        strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
+        sprintf(
+            msg,
+            format,
+            MOVE_X.GetName(), MOVE_X.GetControlName(),
+            MOVE_Y.GetName(), MOVE_Y.GetControlName(),
+            THROW.GetName(), THROW.GetControlName(),
+            RECALL.GetName(), RECALL.GetControlName(),
+            TOGGLE_CAM.GetName(), TOGGLE_CAM.GetControlName(),
+            RELOAD_LEVEL.GetName(), RELOAD_LEVEL.GetControlName()
+        );
+        DrawUiText(msg, 0.2f, 0.2f, FontSize::s);
     }
 }
 

@@ -17,7 +17,9 @@ LevelObj::LevelObj(Vector3 cornerPos, float width, float height, float length)
 void LevelObj::drawObj()
 {
     EnvironmentalObject::drawObj();
+#ifdef DEBUG
     DrawBoundingBox(m_bb, GREEN);
+#endif // DEBUG
 }
 
 bool LevelObj::collisionCheck(BoundingBox bb) const

@@ -22,7 +22,7 @@ public:
 
 	void UpdateEntity(bool doNotMove = false, bool doNotAnimation = false);
 
-	static constexpr const char* S_PLAYER = "resources/human_1.m3d";
+	static constexpr const char* S_PLAYER = "resources/atlas char 2.m3d";
 	static constexpr int ANIM_IDLE = 2;
 	static constexpr int ANIM_PUNCH = 4;
 	static constexpr int ANIM_RUN = 6;

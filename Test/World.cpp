@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "World.h"
 #include "raylib.h"
 #include "Constants.h"
@@ -5,6 +6,7 @@
 #include "LevelMgr.h"
 #include "EnvironmentalObject.h"
 #include "BattyEngine.h"
+#include "BattyUtils.h"
 #include "Gameplay.h"
 #include "Player.h"
 
@@ -12,8 +14,10 @@ World::World(const Player* atlas, bool attached)
 	: Entity(S_MODEL, 30.0f, true, true, true),
 	m_attached(attached), m_player(atlas)
 {
+#ifndef PLATFORM_WEB
 	_ASSERT(atlas);
-
+#endif // !PLATFORM_WEB
+	
 	Texture2D world = LoadTexture("resources/2k_earth_daymap.png");
 
 	SetMaterialTexture(&m_model.materials[0], MATERIAL_MAP_DIFFUSE, world);
@@ -50,7 +54,9 @@ void World::DrawEntity(float offsetY)
 {
 	Entity::DrawEntity(m_radius * -1.0f);
 
+#ifdef DEBUG
 	DrawSphereWires(m_pos, m_radius, 10, 10, GREEN);
+#endif // DEBUG
 }
 
 void World::Move()
@@ -87,6 +93,13 @@ void World::Throw(Vector3 direction)
 	m_throwAccel = direction;
 }
 
+void World::LevelTransition()
+{
+	Vector3 rise = { 0.0f, 1.0f, 0.0f };
+	SetPos(GetPos() + rise);
+	SetTransformAndBb();
+}
+
 void World::CheckLevelCollisions()
 {
 	for (auto& envObj : LevelMgr::Instance().m_envObjs)
@@ -96,21 +109,47 @@ void World::CheckLevelCollisions()
 		BoundingBox objBb = envObj->GetBoundingBox();
 		if (collisionCheck(objBb))
 		{
-			Ray world;
-			world.position = GetPos();
-			world.direction = Vector3Normalize(m_velocity);
+			Ray collisionRay;
+			Vector3 closestPoint = ClosestPointBox(GetPos(), objBb);
+			collisionRay.direction = Vector3Normalize(closestPoint - GetPos());
 
-			RayCollision rc = envObj->GetRayCollision(world);
+			RayCollision rc;
+
+			int i = 1;
+			do
+			{
+				printf("in level collision loop iter %d\n", i);
+				collisionRay.position = GetPos();
+				rc = envObj->GetRayCollision(collisionRay);
+				
+				float overlap = fabs(m_radius - rc.distance);
+				// move at least 1 so we don't get stuck in this loop
+				overlap = fmaxf(overlap, 0.5f);
+				Vector3 toMove = rc.normal * overlap;
+				SetPos(GetPos() + toMove);
+				i++;
+			}
+			// at this point I should check that I'm no longer colliding with the obj. Then I could iteratively keep
+			// moving until I'm not
+			while (collisionCheck(objBb));
 
 			m_velocity = Vector3Reflect(m_velocity, rc.normal) * 0.8f;
 
-			float overlap = envObj->getOverlapDistance(m_pos, m_radius);
-			Vector3 toMove = rc.normal * overlap;
-			SetPos(GetPos() + toMove);
-
 			if (Vector3Length(m_velocity) < 1.5f &&
-					Vector3Equals(rc.normal, { 0.0f, 1.0f, 0.0f }))
-				m_atRest = true;
+				Vector3Equals(rc.normal, { 0.0f, 1.0f, 0.0f }))
+			{
+				// TODO this was my attempt to stop the gross behavior on corners. But it's awful
+				collisionRay.direction = { 0.0f, -1.0f, 0.0f};
+				RayCollision rc = envObj->GetRayCollision(collisionRay);
+				if (rc.hit)
+					m_atRest = true;
+				//else
+				//{
+					// TODO but do I want to change the velocity?
+					//m_velocity = {0.0f, -10.0f, 0.0f};
+					//SetPos(GetPos())
+				//}
+			}
 		}
 	}
 }
@@ -151,4 +190,9 @@ int World::GetTypeId() const
 float World::GetRadius() const
 {
 	return m_radius;
+}
+
+void World::resetRadius()
+{
+	m_scale = 30.0f;
 }
