@@ -36,6 +36,12 @@ void UpdateTitleScreen()
         ControllerMgr::Instance().TrapCursor(true);
         finishScreen = 2;
     }
+
+    // TODO
+    /*if (TOGGLE_MUSIC.GetPressed())
+    {
+        music
+    }*/
 }
 
 void DrawTitleScreen()
@@ -60,6 +66,8 @@ void DrawTitleScreen()
             ControllerMgr::Instance().SPACEBAR.GetName()
         );
         DrawUiText(msg, 0.2f, 0.7f, FontSize::s);
+
+        DrawUiText("ATLAS HUGGED", 0.1f, 0.1f, FontSize::l);
     }
     else
     {
@@ -80,6 +88,7 @@ void DrawTitleScreen()
         strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
         strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
         strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
+        //strncat(format, controlFormat, _batty_countof(format) - strlen(format) - 1);
         sprintf(
             msg,
             format,
@@ -88,7 +97,8 @@ void DrawTitleScreen()
             THROW.GetName(), THROW.GetControlName(),
             RECALL.GetName(), RECALL.GetControlName(),
             TOGGLE_CAM.GetName(), TOGGLE_CAM.GetControlName(),
-            RELOAD_LEVEL.GetName(), RELOAD_LEVEL.GetControlName()
+            RELOAD_LEVEL.GetName(), RELOAD_LEVEL.GetControlName()/*,
+            TOGGLE_MUSIC.GetName(), TOGGLE_MUSIC.GetControlName()*/
         );
         DrawUiText(msg, 0.2f, 0.2f, FontSize::s);
     }

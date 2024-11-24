@@ -2,6 +2,7 @@
 #include "BattyEngine.h"
 #include "Constants.h"
 #include "GameCamera.h"
+#include "AudioMgr.h"
 #include "LevelMgr.h"
 #include "ControllerMgr.h"
 #include "EntityMgr.h"
@@ -9,6 +10,7 @@
 #include "Ground.h"
 #include "LevelObj.h"
 #include "GameControls.h"
+#include "NoiseIds.h"
 #include "Player.h"
 #include "World.h"
 #include "PowerUp.h"
@@ -22,7 +24,7 @@ static bool worldCam = false;
 static bool justToggledCam = false;
 
 static constexpr int TOT_LEVELS = 2;
-static int curLevel = 3;
+static int curLevel = 1;
 
 static Light lights[MAX_LIGHTS] = { 0 };
 
@@ -39,7 +41,7 @@ static bool inLevelTransition = false;
 void MakeLevel(int level)
 {
 	// add environmental objects here
-	LevelMgr::Instance().AddEnvObj(new Ground(2500));
+	LevelMgr::Instance().AddEnvObj(new Ground(2500, "resources/aristotle-solar-system.png"));
     float radius = 10.0f;
     PowerUp* powerUp = nullptr;
     switch (level)
@@ -194,7 +196,7 @@ void InitGameplayScreen()
 
     player = new Player();
     player->SetCamera(&cam);
-    EntityMgr::Instance().AddEntity(player);
+    EntityMgr::Instance().AddEntity(player, false);
 
     world = new World(player, true);
     EntityMgr::Instance().AddEntity(world, false);
@@ -313,9 +315,10 @@ void UpdateGameplayScreen()
         }
     }
 
-    if (allDone)
+    if (!inLevelTransition && allDone)
     {
         inLevelTransition = true;
+        AudioMgr::Instance().PlayNoise(N_LEVEL_DONE);
     }
 }
 

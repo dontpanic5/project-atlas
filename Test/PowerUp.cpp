@@ -5,6 +5,10 @@
 PowerUp::PowerUp(Mesh mesh, float radius, Vector3 pos)
 	: Entity(mesh, 1.0f, true, true, true, pos)
 {
+	Image green = GenImageColor(1024, 1024, GREEN);
+	Texture tex = LoadTextureFromImage(green);
+	SetMaterialTexture(&m_model.materials[0], MATERIAL_MAP_DIFFUSE, tex);
+
 	SetTransformAndBb();
 	Vector3 dist = m_bb.max - m_bb.min;
 	m_radius = Vector3Length(dist) / 2.0f;

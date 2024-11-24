@@ -99,7 +99,7 @@ void Player::Move()
     float moveX = MOVE_X.GetPressed();
     float moveY = MOVE_Y.GetPressed();
 
-    if (moveX == 0.0f && moveY == 0.0f)
+    if (fabsf(moveX) < 0.3f && fabsf(moveY) < 0.3f)
         return;
 
     // easier to work with these like this

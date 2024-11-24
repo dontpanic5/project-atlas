@@ -2,9 +2,13 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "BattyEngine.h"
+#include "AudioMgr.h"
 #include "screens.h"
+#include "NoiseIds.h"
 
 GameScreen currentScreen;
+
+Font font;
 
 // Required variables to manage screen transitions (fade-in, fade-out)
 static float transAlpha = 0.0f;
@@ -21,10 +25,21 @@ int main(void)
 	SetLogicCb(UpdateLogic);
 	SetDrawCb(UpdateDrawFrame);
 
-	Init("TEST");
+	Init("ATLAS HUGGED");
+
+	font = LoadFontEx("resources/Greek-Freak.ttf", 128, nullptr, 0);
+	SetDefaultFont(font);
 
 	// TODO music
 	// music = LoadMusicStream("");
+
+	constexpr int numPowerUps = 1;
+	Sound powerUpSounds[numPowerUps] = {LoadSound("resources/audio/Modern7.ogg")};
+	AudioMgr::Instance().AddNoise({powerUpSounds, numPowerUps, 300.0f, N_POWERUP});
+
+	constexpr int numLevelDone = 1;
+	Sound levelDone[numLevelDone] = {LoadSound("resources/audio/spell_00longer.wav")};
+	AudioMgr::Instance().AddNoise({levelDone, numLevelDone, 300.0f, N_LEVEL_DONE});
 
 	currentScreen = TITLE;
 	InitTitleScreen();
@@ -42,6 +57,8 @@ int main(void)
 	default: break;
 	}
 	UnloadGameplayScreen();
+
+	UnloadFont(font);
 
 	//UnloadMusicStream(music);
 
