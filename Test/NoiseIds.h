@@ -1,0 +1,10 @@
+#ifndef NOISE_IDS_H_INCLUDED
+#define NOISE_IDS_H_INCLUDED
+
+enum NOISE
+{
+	N_POWERUP,
+	N_LEVEL_DONE,
+};
+
+#endif // !NOISE_IDS_H_INCLUDED

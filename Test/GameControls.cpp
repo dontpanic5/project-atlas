@@ -8,3 +8,4 @@ ButtonBinding	THROW	= ButtonBinding("THROW WORLD",	&ControllerMgr::A,					&Contr
 ButtonBinding	RECALL = ButtonBinding("RECALL WORLD", &ControllerMgr::A, &ControllerMgr::SPACEBAR, nullptr);
 ButtonBinding	RELOAD_LEVEL=ButtonBinding("RELOAD LEVEL",&ControllerMgr::B,						&ControllerMgr::ENTER,		nullptr);
 ButtonBinding	TOGGLE_CAM=ButtonBinding("TOGGLE CAMERA",&ControllerMgr::X,				&ControllerMgr::F,			nullptr);
+ButtonBinding	TOGGLE_MUSIC=ButtonBinding("TOGGLE MUSIC",			nullptr,	&ControllerMgr::M,	nullptr);

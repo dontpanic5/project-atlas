@@ -10,5 +10,6 @@ extern ButtonBinding	THROW;
 extern ButtonBinding	RELOAD_LEVEL;
 extern ButtonBinding	RECALL;
 extern ButtonBinding	TOGGLE_CAM;
+extern ButtonBinding	TOGGLE_MUSIC;
 
 #endif // !GAME_CONTROLS_H_INCLUDED

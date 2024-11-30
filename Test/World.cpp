@@ -2,6 +2,7 @@
 #include "World.h"
 #include "raylib.h"
 #include "Constants.h"
+#include "AudioMgr.h"
 #include "EntityMgr.h"
 #include "LevelMgr.h"
 #include "EnvironmentalObject.h"
@@ -9,6 +10,7 @@
 #include "BattyUtils.h"
 #include "Gameplay.h"
 #include "Player.h"
+#include "NoiseIds.h"
 
 World::World(const Player* atlas, bool attached)
 	: Entity(S_MODEL, 30.0f, true, true, true),
@@ -167,6 +169,7 @@ void World::CheckEntityCollisions()
 			{
 				entity->ResetEntity();
 				m_scale *= 1.5f;
+				AudioMgr::Instance().PlayNoise(N_POWERUP);
 			}
 		}
 	}

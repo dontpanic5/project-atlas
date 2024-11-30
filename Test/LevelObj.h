@@ -18,6 +18,9 @@ public:
 
 protected:
 	BoundingBox m_bb;
+
+	static bool s_texLoaded;
+	static Texture s_tex;
 };
 
 #endif // !LEVEL_OBJ_H_INCLUDED
