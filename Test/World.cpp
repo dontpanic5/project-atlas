@@ -24,8 +24,7 @@ World::World(const Player* atlas, bool attached)
 
 	SetMaterialTexture(&m_model.materials[0], MATERIAL_MAP_DIFFUSE, world);
 	SetMaterialTexture(&m_model.materials[1], MATERIAL_MAP_DIFFUSE, world);
-	m_model.materials[0].shader = g_lighting;
-	m_model.materials[1].shader = g_lighting;
+	SetMaterialShaders(g_lighting);
 
 	Move();
 

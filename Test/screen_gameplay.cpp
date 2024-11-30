@@ -348,7 +348,8 @@ void DrawGameplayScreen()
     if (inLevelTransition)
     {
         char text[512] = "You have grown the World to a magnificent size.\n" \
-            "Now you must repeat your task as is your eternal punishment.\n";
+            "Now you must repeat your task\n" \
+            "as is your eternal punishment.\n";
         DrawUiText(text, 0.1f, 0.25f, FontSize::m);
     }
 }

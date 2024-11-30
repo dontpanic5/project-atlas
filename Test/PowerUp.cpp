@@ -1,6 +1,7 @@
 #include "PowerUp.h"
 #include "raylib.h"
 #include "Gameplay.h"
+#include "BattyEngine.h"
 
 PowerUp::PowerUp(Mesh mesh, float radius, Vector3 pos)
 	: Entity(mesh, 1.0f, true, true, true, pos)
@@ -8,6 +9,7 @@ PowerUp::PowerUp(Mesh mesh, float radius, Vector3 pos)
 	Image green = GenImageColor(1024, 1024, GREEN);
 	Texture tex = LoadTextureFromImage(green);
 	SetMaterialTexture(&m_model.materials[0], MATERIAL_MAP_DIFFUSE, tex);
+	SetMaterialShaders(g_lighting);
 
 	SetTransformAndBb();
 	Vector3 dist = m_bb.max - m_bb.min;

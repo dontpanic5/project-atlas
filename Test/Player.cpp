@@ -6,17 +6,18 @@
 #include "GameControls.h"
 #include "Gameplay.h"
 #include "World.h"
+#include "BattyEngine.h"
 
 Player::Player(bool drawBounds)
     : Entity(S_PLAYER, 40.0f, drawBounds, true)
 {
+    SetMaterialShaders(g_lighting);
     SetCurAnim(ANIM_IDLE);
     m_animLoop = true;
 }
 
 bool Player::collisionCheck(BoundingBox bb)
 {
-    // TODO why isn't this defined in Entity?
     return CheckCollisionBoxes(GetBoundingBox(), bb);
 }
 
@@ -100,7 +101,12 @@ void Player::Move()
     float moveY = MOVE_Y.GetPressed();
 
     if (fabsf(moveX) < 0.3f && fabsf(moveY) < 0.3f)
+    {
+        // every tick we should update the pos even if we aren't
+        // moving
+        SetPos(GetPos());
         return;
+    }
 
     // easier to work with these like this
     moveX *= -1.0f;

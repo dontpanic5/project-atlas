@@ -5,8 +5,11 @@
 static int finishScreen = 0;
 static bool controllerPrompt = true;
 
+static Texture tex;
+
 void InitTitleScreen()
 {
+    tex = LoadTexture("resources/aristotle-solar-system.png");
 }
 
 void UpdateTitleScreen()
@@ -46,6 +49,8 @@ void UpdateTitleScreen()
 
 void DrawTitleScreen()
 {
+    DrawTextureEx(tex, {1500.0f, 1500.0f}, 180.0f, 1.0f, WHITE);
+
     if (controllerPrompt)
     {
         char msg[512];
@@ -100,13 +105,13 @@ void DrawTitleScreen()
             RELOAD_LEVEL.GetName(), RELOAD_LEVEL.GetControlName()/*,
             TOGGLE_MUSIC.GetName(), TOGGLE_MUSIC.GetControlName()*/
         );
-        DrawUiText(msg, 0.2f, 0.2f, FontSize::s);
+        DrawUiText(msg, 0.2f, 0.1f, FontSize::s);
     }
 }
 
 void UnloadTitleScreen()
 {
-
+    UnloadTexture(tex);
 }
 
 int FinishTitleScreen()
