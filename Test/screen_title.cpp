@@ -60,6 +60,8 @@ void DrawTitleScreen()
             ControllerMgr::Instance().SPACEBAR.GetName()
         );
         DrawUiText(msg, 0.2f, 0.7f, FontSize::s);
+        sprintf(msg, "ATLAS HUGGED");
+        DrawUiText(msg, 0.1f, 0.2f, FontSize::l);
     }
     else
     {

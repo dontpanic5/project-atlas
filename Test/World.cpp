@@ -123,7 +123,7 @@ void World::CheckLevelCollisions()
 				rc = envObj->GetRayCollision(collisionRay);
 				
 				float overlap = fabs(m_radius - rc.distance);
-				// move at least 1 so we don't get stuck in this loop
+				// move at least 0.5 so we don't get stuck in this loop
 				overlap = fmaxf(overlap, 0.5f);
 				Vector3 toMove = rc.normal * overlap;
 				SetPos(GetPos() + toMove);

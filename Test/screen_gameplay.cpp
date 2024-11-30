@@ -22,7 +22,7 @@ static bool worldCam = false;
 static bool justToggledCam = false;
 
 static constexpr int TOT_LEVELS = 2;
-static int curLevel = 3;
+static int curLevel = 1;
 
 static Light lights[MAX_LIGHTS] = { 0 };
 
