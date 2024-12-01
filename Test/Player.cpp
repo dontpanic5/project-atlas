@@ -190,8 +190,6 @@ void Player::CheckLevelCollisions()
                 Vector3 toMove = Vector3Scale(rayCollison.normal, distance);
                 SetPos(Vector3Add(GetPos(), toMove));
             }
-
-            //SetPos(m_prevPos);
         }
     }
 }

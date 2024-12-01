@@ -23,7 +23,6 @@ static GameCamera cam(true, curFoV);
 static bool worldCam = false;
 static bool justToggledCam = false;
 
-static constexpr int TOT_LEVELS = 2;
 static int curLevel = 1;
 
 static Light lights[MAX_LIGHTS] = { 0 };
@@ -63,26 +62,6 @@ void MakeLevel(int level)
 #endif // !PLATFORM_WEB
         break;
     case 2:
-        LevelMgr::Instance().AddEnvObj(new LevelObj({ -500.0f, 0.0f, 400.0f }, 1000.0f, 600.0f, 100.0f));
-
-        radius = 10.0f;
-        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, 100.0f, 400.0f });
-        environmentalEntities[envEntitiesIdx++] = powerUp;
-        EntityMgr::Instance().AddEntity(powerUp);
-        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, 200.0f, 400.0f });
-        environmentalEntities[envEntitiesIdx++] = powerUp;
-        EntityMgr::Instance().AddEntity(powerUp);
-        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { -200.0f, 150.0f, 400.0f });
-        environmentalEntities[envEntitiesIdx++] = powerUp;
-        EntityMgr::Instance().AddEntity(powerUp);
-        powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 200.0f, 150.0f, 400.0f });
-        environmentalEntities[envEntitiesIdx++] = powerUp;
-        EntityMgr::Instance().AddEntity(powerUp);
-#ifndef PLATFORM_WEB
-        _ASSERT(envEntitiesIdx < 32);
-#endif // !PLATFORM_WEB
-        break;
-    case 3:
         LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 200.0f }, 600.0f, 50.0f, 100.0f));
         LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 300.0f }, 100.0f, 50.0f, 200.0f));
         LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 500.0f }, 600.0f, 50.0f, 100.0f));
@@ -102,7 +81,7 @@ void MakeLevel(int level)
         environmentalEntities[envEntitiesIdx++] = powerUp;
         EntityMgr::Instance().AddEntity(powerUp);
         break;
-    case 4:
+    case 3:
         LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, -200.0f }, 600.0f, 50.0f, 100.0f));
         LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, -100.0f }, 100.0f, 50.0f, 200.0f));
         LevelMgr::Instance().AddEnvObj(new LevelObj({ -300.0f, 0.0f, 100.0f }, 600.0f, 50.0f, 100.0f));
@@ -122,7 +101,7 @@ void MakeLevel(int level)
         environmentalEntities[envEntitiesIdx++] = powerUp;
         EntityMgr::Instance().AddEntity(powerUp);
         break;
-    case 5:
+    case 4:
         powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 0.0f, radius, 1000.0f });
         environmentalEntities[envEntitiesIdx++] = powerUp;
         EntityMgr::Instance().AddEntity(powerUp);
@@ -146,7 +125,7 @@ void MakeLevel(int level)
         LevelMgr::Instance().AddEnvObj(new LevelObj({ 150.0f, 100.0f, 500.0f }, 100.0f, 200.0f, 100.0f));
         LevelMgr::Instance().AddEnvObj(new LevelObj({ -250.0f, 300.0f, 500.0f }, 700.0f, 500.0f, 100.0f));
         break;
-    case 6:
+    case 5:
         powerUp = new PowerUp(GenMeshSphere(radius, 20, 20), radius, { 100.0f, radius, 350.0f });
         environmentalEntities[envEntitiesIdx++] = powerUp;
         EntityMgr::Instance().AddEntity(powerUp);
@@ -247,7 +226,8 @@ void UpdateGameplayScreen()
         }
         MakeLevel(curLevel);
         world->resetRadius();
-        player->SetPos(Vector3Zero());
+        player->ResetEntity();
+        player->SpawnEntity();
     }
 
     if (inLevelTransition)
@@ -270,7 +250,8 @@ void UpdateGameplayScreen()
             }
 
             MakeLevel(curLevel);
-            player->SetPos(Vector3Zero());
+            player->ResetEntity();
+            player->SpawnEntity();
             cam.FollowEntity3rdPerson(*player, TICK, { 0.0f, 75.0f, -80.0f }, true);
         }
     }
@@ -293,10 +274,8 @@ void UpdateGameplayScreen()
         justToggledCam = true;
     }
 
-    if (!inLevelTransition && (world->m_attached || !worldCam))
-    {
+    if (!inLevelTransition && !worldCam)
         cam.FollowEntity3rdPerson(*player, TICK, { 0.0f, 75.0f, -80.0f }, justToggledCam);
-    }
     else
         cam.FollowEntity(*world, TICK, { 0.0f,100.0f,-80.0f});
     //printf("cam pos x: %f y: %f z: %f\n", cam.GetPosition().x, cam.GetPosition().y, cam.GetPosition().z);
