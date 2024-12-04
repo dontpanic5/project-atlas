@@ -36,6 +36,7 @@ static Entity* environmentalEntities[MAX_ENV_ENTITIES];
 
 static int powerUpsCollected = 0;
 static bool inLevelTransition = false;
+static Sound* levelTransitionSound = nullptr;
 
 void MakeLevel(int level)
 {
@@ -234,6 +235,11 @@ void UpdateGameplayScreen()
     {
         if (THROW.GetPressed())
         {
+            if (levelTransitionSound)
+            {
+                StopSound(*levelTransitionSound);
+                levelTransitionSound = nullptr;
+            }
             inLevelTransition = false;
             world->resetRadius();
             curLevel++;
@@ -297,7 +303,7 @@ void UpdateGameplayScreen()
     if (!inLevelTransition && allDone)
     {
         inLevelTransition = true;
-        AudioMgr::Instance().PlayNoise(N_LEVEL_DONE);
+        levelTransitionSound = &AudioMgr::Instance().PlayNoise(N_LEVEL_DONE);
     }
 }
 

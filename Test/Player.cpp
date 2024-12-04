@@ -11,7 +11,6 @@
 Player::Player(bool drawBounds)
     : Entity(S_PLAYER, 40.0f, drawBounds, true)
 {
-    SetMaterialShaders(g_lighting);
     SetCurAnim(ANIM_IDLE);
     m_animLoop = true;
 }
