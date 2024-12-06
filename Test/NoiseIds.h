@@ -5,6 +5,7 @@ enum NOISE
 {
 	N_POWERUP,
 	N_LEVEL_DONE,
+	N_BOUNCE,
 };
 
 #endif // !NOISE_IDS_H_INCLUDED

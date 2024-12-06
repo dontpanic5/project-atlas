@@ -139,17 +139,17 @@ void World::CheckLevelCollisions()
 			if (Vector3Length(m_velocity) < 1.5f &&
 				Vector3Equals(rc.normal, { 0.0f, 1.0f, 0.0f }))
 			{
-				// TODO this was my attempt to stop the gross behavior on corners. But it's awful
 				collisionRay.direction = { 0.0f, -1.0f, 0.0f};
 				RayCollision rc = envObj->GetRayCollision(collisionRay);
 				if (rc.hit)
 					m_atRest = true;
-				//else
-				//{
-					// TODO but do I want to change the velocity?
-					//m_velocity = {0.0f, -10.0f, 0.0f};
-					//SetPos(GetPos())
-				//}
+			}
+
+			if (!m_atRest)
+			{
+				float volume = Vector3Length(m_velocity) / 10.0f;
+				volume = fminf(volume, 1.0f);
+  				makeNoise(N_BOUNCE, 1.0f, volume);
 			}
 		}
 	}
