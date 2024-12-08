@@ -42,7 +42,7 @@ int main(void)
 	AudioMgr::Instance().AddNoise({levelDone, numLevelDone, 300.0f, N_LEVEL_DONE});
 
 	constexpr int numBounce = 1;
-	Sound bounce[numBounce] = {LoadSound("resources/audio/rubberballbouncing-251948.mp3")};
+	Sound bounce[numBounce] = {LoadSound("resources/audio/bounce.ogg")};
 	AudioMgr::Instance().AddNoise({bounce, numBounce, 300.0f, N_BOUNCE});
 
 	currentScreen = TITLE;
