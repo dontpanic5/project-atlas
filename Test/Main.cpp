@@ -7,6 +7,7 @@
 #include "NoiseIds.h"
 
 GameScreen currentScreen;
+Music music;
 
 Font font;
 
@@ -30,8 +31,13 @@ int main(void)
 	font = LoadFontEx("resources/Greek-Freak.ttf", 128, nullptr, 0);
 	SetDefaultFont(font);
 
-	// TODO music
-	// music = LoadMusicStream("");
+	// music
+	music = LoadMusicStream("resources/audio/atlas hugged.ogg");
+	SetMusicVolume(music, 1.2f);
+
+#ifndef DEBUG
+	PlayMusicStream(music);
+#endif // !DEBUG
 
 	constexpr int numPowerUps = 1;
 	Sound powerUpSounds[numPowerUps] = {LoadSound("resources/audio/Modern7.ogg")};
@@ -64,7 +70,7 @@ int main(void)
 
 	UnloadFont(font);
 
-	//UnloadMusicStream(music);
+	UnloadMusicStream(music);
 
 	DeInit();
 }
@@ -138,7 +144,8 @@ static void DrawTransition(void)
 
 static void UpdateLogic()
 {
-	//UpdateMusicStream(music);
+	// TODO why isn't this in engine??
+	UpdateMusicStream(music);       // NOTE: Music keeps playing between screens
 
 	if (!onTransition)
 	{
